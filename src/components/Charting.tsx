@@ -31,7 +31,7 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
             });
       }
       fetcher();
-   }, []);
+   }, [userSymbol]);
    return (
       <div className="charting">
          <Line

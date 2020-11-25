@@ -1,0 +1,26 @@
+.MainDiv {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   /* background-color: lightslategray; */
+   width: 100vw;
+   height: 100vh;
+}
+.MiddleSection {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   background-color: rgb(42, 42, 42);
+   opacity: 0.8;
+   text-emphasis-color: white;
+   width: 80%;
+   height: 70%;
+}
+.InputArea {
+   height: 30px;
+   width: 100px;
+}
+.searchBtn {
+   height: 3em;
+   width: 3em;
+}

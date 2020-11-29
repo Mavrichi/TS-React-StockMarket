@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./MainComponent.css";
 import gsap from "gsap";
 import Charting from "./Charting";
+import StockChart from "./ChartLogic";
 const Main: React.FC = () => {
    const [searchInput, setSearchInput] = useState<string>("");
    const [transformed, setTransformed] = useState(false);
@@ -58,30 +59,26 @@ const Main: React.FC = () => {
 
    return (
       <div className="MainDiv">
+         <form>
+            <label htmlFor="browser">Choose a symbol:</label>
+            <input
+               list="browsers"
+               name="browser"
+               id="browser"
+               onChange={handleSearch}
+            ></input>
+            <datalist id="browsers" className="InputArea">
+               {SymbolList()}
+            </datalist>
+         </form>
          <div className="MiddleSection">
-            <form>
-               <label htmlFor="browser">Choose a symbol:</label>
-               <input
-                  list="browsers"
-                  name="browser"
-                  id="browser"
-                  onChange={handleSearch}
-               ></input>
-               <datalist id="browsers" className="InputArea">
-                  {SymbolList()}
-               </datalist>
-               <span>
-                  <button className="searchBtn" type="submit">
-                     🔍
-                  </button>
-               </span>
-            </form>
             {transformed ? (
                <Charting userSymbol={searchInput} />
             ) : (
                <div>...Loading chart</div>
             )}
             {/* <Charting userSymbol={searchInput} /> */}
+            {/* <StockChart /> */}
          </div>
       </div>
    );

@@ -1,55 +1,72 @@
+import { getDistance } from "@amcharts/amcharts4/.internal/core/utils/Math";
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
-import ChartPoint, { Chart } from "chart.js";
+import StockChart from "./ChartLogic";
+//import ChartPoint, { Chart } from "chart.js";
 interface Props {
    userSymbol: string;
 }
 const Charting: React.FC<Props> = ({ userSymbol }) => {
-   const [variabila, setVariabila] = useState<number[] | undefined>();
-   //    const [UserSymbol, setUserSymbol] = useState<string>();
-   //    setUserSymbol(userSymbol);
-   const symbolUrl: string = `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=1&from=1605543327&to=1605629727&token=butpoev48v6skju275a0`;
+   const [StockData, setStockData] = useState<stocktype[]>();
+   const symbolUrl: string = `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=D&from=1577836800&to=1605830400&token=butpoev48v6skju275a0`;
 
-   interface datatype {
-      c: number; // close price
-      o: number; // open price
-      h: number; // high price
-      l: number; // low price
-      v: number; // volume
-      t: number; // timestamp
-      s: string; // api message
+   interface stocktype {
+      c: string; // close price
+      o: string; // open price
+      h: string; // high price
+      l: string; // low price
+      v: string; // volume
+      t: string; // timestamp
    }
+   const getDate: any = (UNIX: number) => {
+      var a = new Date(UNIX * 1000);
+      var months = [
+         "Jan",
+         "Feb",
+         "Mar",
+         "Apr",
+         "May",
+         "Jun",
+         "Jul",
+         "Aug",
+         "Sep",
+         "Oct",
+         "Nov",
+         "Dec",
+      ];
+      var year = a.getFullYear();
+      var month = a.getMonth();
+      var date = a.getDate();
+      var hour = a.getHours();
+      // var min = a.getMinutes();
+      // var sec = a.getSeconds();
+      //var time = date + "-" + month + "-" + year; // + " " + hour + ":" + min + ":" + sec;
+      var time = year + "-" + month + "-" + date + "-" + hour; // + " " + hour + ":" + min + ":" + sec;
+      return time;
+   };
    useEffect(() => {
-      console.log("Symbolul ales este", userSymbol);
       async function fetcher() {
          await fetch(symbolUrl)
             .then((res) => res.json())
             .then((data) => {
-               console.log(data);
-               // const dataMap = data.map((e: datatype) => e.s);
-               setVariabila(data.o);
+               const datanoua = data.c.map(function (c: number, i: number) {
+                  return {
+                     date: getDate(data.t[i]),
+                     open: data.o[i].toString(),
+                     high: data.h[i].toString(),
+                     low: data.l[i].toString(),
+                     close: data.c[i].toString(),
+                  };
+               });
+               console.log("datanoua este ", datanoua);
+               setStockData(datanoua);
             });
       }
       fetcher();
    }, [userSymbol]);
    return (
       <div className="charting">
-         <Line
-            data={{
-               labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-               datasets: [
-                  {
-                     label: "Price",
-                     data: variabila,
-                     backgroundColor: "red",
-                     fill: "false",
-                  },
-               ],
-            }}
-            width={1000}
-            height={500}
-            options={{ maintainAspectRatio: false }}
-         />
+         <StockChart StockData={StockData} />
       </div>
    );
 };

@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./MainComponent.css";
 import gsap from "gsap";
 import Charting from "./Charting";
-import StockChart from "./ChartLogic";
 const Main: React.FC = () => {
    const [searchInput, setSearchInput] = useState<string>("");
-   const [transformed, setTransformed] = useState(false);
+   const [transformed, setTransformed] = useState<boolean>(false);
    const [symbols, setSymbols] = useState<string[]>([]);
-   const symbolUrl =
+   const symbolUrl: string =
       "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=butpoev48v6skju275a0";
    interface datatype {
       currency: string;
@@ -24,7 +23,6 @@ const Main: React.FC = () => {
             setSymbols(dataMap);
          });
    }, []);
-   const [symbolOptions, setSymbolOptions] = useState<JSX.Element[]>();
 
    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (symbols.includes(e.target.value.toUpperCase())) {
@@ -38,7 +36,7 @@ const Main: React.FC = () => {
 
    const SymbolList = () => {
       const rows = [];
-      for (var i = 0; i < symbols.length; i++) {
+      for (let i: number = 0; i < symbols.length; i++) {
          rows.push(
             <option key={i} value={symbols[i]}>
                {symbols[i]}
@@ -52,25 +50,27 @@ const Main: React.FC = () => {
    return (
       <div className="MainDiv">
          <form>
-            <label htmlFor="browser">Choose a symbol:</label>
-            <input
-               list="browsers"
-               name="browser"
-               id="browser"
-               onChange={handleSearch}
-            ></input>
-            <datalist id="browsers" className="InputArea">
-               {SymbolList()}
-            </datalist>
+            <div className="searchBox">
+               <label htmlFor="browser"></label>
+               <input
+                  placeholder="Search for a stock market symbol ex: AAPL | GOOG | TSLA..."
+                  className="searchBar"
+                  list="browsers"
+                  name="browser"
+                  id="browser"
+                  onChange={handleSearch}
+               ></input>
+               <datalist id="browsers" className="InputArea">
+                  {SymbolList()}
+               </datalist>
+            </div>
          </form>
          <div className="MiddleSection">
             {transformed ? (
                <Charting userSymbol={searchInput} />
             ) : (
-               <div>...Loading chart</div>
+               <div className="Loading">Search for a symbol</div>
             )}
-            {/* <Charting userSymbol={searchInput} /> */}
-            {/* <StockChart /> */}
          </div>
       </div>
    );

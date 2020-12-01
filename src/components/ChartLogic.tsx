@@ -62,7 +62,6 @@ const StockChart: React.FC<Props> = ({ StockData }) => {
       let scrollbarX = new am4charts.XYChartScrollbar();
       scrollbarX.series.push(lineSeries);
       chart.scrollbarX = scrollbarX;
-      console.log("Valoarea stockdata este", StockData);
       if (StockData !== undefined) {
          chart.data = StockData;
       }

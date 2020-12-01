@@ -13,9 +13,9 @@ const WS: React.FC = () => {
       p: number; // last price
    }
 
-   const [v, setV] = useState();
-   const [t, setT] = useState();
-   const [s, setS] = useState();
+   const [v, setV] = useState<number>();
+   const [t, setT] = useState<number>();
+   const [s, setS] = useState<string>();
    const [p, setP] = useState<number>();
    useEffect(() => {
       socket.addEventListener("open", function (event) {

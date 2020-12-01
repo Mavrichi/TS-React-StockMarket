@@ -24,7 +24,7 @@ const StockChart: React.FC<Props> = ({ StockData }) => {
       let chart = am4core.create("chartdiv", am4charts.XYChart);
       chart.paddingRight = 20;
 
-      chart.dateFormatter.inputDateFormat = "yyyy-MM-dd-hh";
+      chart.dateFormatter.inputDateFormat = "yyyy-MM-dd-hh-mm";
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.grid.template.location = 0;

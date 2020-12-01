@@ -9,7 +9,6 @@
 .MiddleSection {
    display: flex;
    justify-content: center;
-   align-items: center;
    background-color: rgb(42, 42, 42);
    opacity: 0.8;
    text-emphasis-color: white;
@@ -23,4 +22,7 @@
 .searchBtn {
    height: 3em;
    width: 3em;
+}
+.charting {
+   flex: 1 1 auto;
 }

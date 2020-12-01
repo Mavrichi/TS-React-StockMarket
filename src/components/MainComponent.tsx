@@ -22,25 +22,17 @@ const Main: React.FC = () => {
          .then((data) => {
             const dataMap = data.map((e: datatype) => e.symbol);
             setSymbols(dataMap);
-            console.log("S-a executat Search symbol");
          });
    }, []);
    const [symbolOptions, setSymbolOptions] = useState<JSX.Element[]>();
 
    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("Inainte de IF 1");
       if (symbols.includes(e.target.value.toUpperCase())) {
          if (transformed) {
-            gsap.to(".MiddleSection", { justifyContent: "start" });
+            gsap.to(".App", { justifyContent: "start" });
          }
          setSearchInput(e.target.value.toUpperCase());
          setTransformed(true);
-         console.log(
-            "Inauntru la ambele ifuri E.TargetVALUE: ",
-            e.target.value,
-            "searchInput este:",
-            searchInput
-         );
       }
    };
 

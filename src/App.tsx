@@ -26,6 +26,7 @@ function App() {
 
    return (
       <div className="App">
+         <h1 id="mainTitle">Just another free Stock Charts Website</h1>
          <Main></Main>
          {/* <WS></WS> */}
       </div>

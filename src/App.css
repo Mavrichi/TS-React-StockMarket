@@ -1,7 +1,8 @@
 .App {
    text-align: center;
    /* background-color: darkblue; */
-   background-image: url("./pexels-vlado-paunovic-3038740.jpg");
+   /*background-image: url("./pexels-vlado-paunovic-3038740.jpg");*/
+   background-color: rgb(32, 32, 32);
    height: 100vh;
    width: 100vw;
 }
@@ -9,4 +10,7 @@ html,
 body {
    margin: 0;
    padding: 0;
+}
+#mainTitle {
+   color: white;
 }

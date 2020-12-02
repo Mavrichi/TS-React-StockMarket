@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./MainComponent.css";
-import gsap from "gsap";
 import Charting from "./Charting";
 const Main: React.FC = () => {
    const [searchInput, setSearchInput] = useState<string>("");
@@ -31,9 +30,6 @@ const Main: React.FC = () => {
       //  }
       e.preventDefault();
       if (symbols.includes(e.target.value.toUpperCase())) {
-         if (transformed) {
-            gsap.to(".App", { justifyContent: "start" });
-         }
          setSearchInput(e.target.value.toUpperCase());
          setTransformed(true);
       }

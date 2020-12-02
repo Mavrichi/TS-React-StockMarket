@@ -69,7 +69,9 @@ const Main: React.FC = () => {
             {transformed ? (
                <Charting userSymbol={searchInput} />
             ) : (
-               <div className="Loading">Search for a symbol</div>
+               <div className="Loading">
+                  Search for a symbol to render a new chart !
+               </div>
             )}
          </div>
       </div>

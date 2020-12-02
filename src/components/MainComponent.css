@@ -23,6 +23,9 @@
    height: 3em;
    width: 3em;
 }
+.Loading {
+   font-size: 2em;
+}
 .charting {
    flex: 1 1 auto;
 }

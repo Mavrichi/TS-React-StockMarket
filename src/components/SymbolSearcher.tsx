@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./MainComponent.css";
-import Charting from "./Charting";
-const Main: React.FC = () => {
+import DataParser from "./DataParser";
+const SymbolSearch: React.FC = () => {
    const [searchInput, setSearchInput] = useState<string>("");
    const [transformed, setTransformed] = useState<boolean>(false);
    const [symbols, setSymbols] = useState<string[]>([]);
@@ -67,7 +67,7 @@ const Main: React.FC = () => {
 
          <div className="MiddleSection">
             {transformed ? (
-               <Charting userSymbol={searchInput} />
+               <DataParser userSymbol={searchInput} />
             ) : (
                <div className="Loading">
                   Search for a symbol to render a new chart !
@@ -78,4 +78,4 @@ const Main: React.FC = () => {
    );
 };
 
-export default Main;
+export default SymbolSearch;

@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Main from "./components/MainComponent";
+import SymbolSearch from "./components/SymbolSearcher";
 //import WS from "./components/WS";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
          <h1 id="mainTitle">
             (っ◔◡◔)っ ♥ Just another free Stock Charts Website ♥
          </h1>
-         <Main></Main>
+         <SymbolSearch></SymbolSearch>
          {/* <WS></WS> */}
       </div>
    );

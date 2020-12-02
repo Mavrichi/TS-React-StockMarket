@@ -3,7 +3,7 @@ import StockChart from "./ChartLogic";
 interface Props {
    userSymbol: string;
 }
-const Charting: React.FC<Props> = ({ userSymbol }) => {
+const DataParser: React.FC<Props> = ({ userSymbol }) => {
    const [StockData, setStockData] = useState<stocktype[]>();
    const [startTimeStamp, setStartTimeStamp] = useState<number>(1577836800);
    const [resolution, setResolution] = useState<string>("D");
@@ -192,4 +192,4 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
    );
 };
 
-export default Charting;
+export default DataParser;

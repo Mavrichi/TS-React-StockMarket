@@ -87,6 +87,6 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
       };
    }, [StockData, averageLine]);
 
-   return <div id="chartdiv" style={{ width: "100%", height: "100%" }}></div>;
+   return <div id="chartdiv" style={{ width: "100%", height: "95%" }}></div>;
 };
 export default StockChart;

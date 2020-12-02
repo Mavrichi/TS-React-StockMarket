@@ -145,26 +145,29 @@
 
 @media only screen and (max-width: 600px) {
    .button1 {
-      height: 3em;
-      width: 5em;
-      margin: 0.4em auto;
+      height: 4em;
+      width: 6em;
+      margin: 0.4em 0.3em auto;
    }
    .button2 {
-      height: 3em;
-      width: 5em;
-      margin: 0.4em auto;
+      height: 4em;
+      width: 6em;
+      margin: 0.4em 0.3em auto;
    }
    .button3 {
-      height: 3em;
+      height: 4em;
       width: 10em;
       margin: 0.4em auto;
    }
    .button4 {
-      height: 3em;
+      height: 4em;
       width: 10em;
       margin: 0.4em auto;
    }
    #chartDiv {
       height: 95%;
+   }
+   .charting {
+      height: 60%;
    }
 }

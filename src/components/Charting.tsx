@@ -38,12 +38,12 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
       if (timestamp === "1W") {
          newStamp = currDate - 7 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
-         setResolution("60");
+         setResolution("30");
       }
       if (timestamp === "1M") {
          newStamp = currDate - 30 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
-         setResolution("60");
+         setResolution("30");
       }
       if (timestamp === "6M") {
          newStamp = currDate - 6 * 30 * 24 * 60 * 60;

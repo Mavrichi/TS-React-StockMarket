@@ -6,7 +6,9 @@ import Main from "./components/MainComponent";
 function App() {
    return (
       <div className="App">
-         <h1 id="mainTitle">Just another free Stock Charts Website</h1>
+         <h1 id="mainTitle">
+            (っ◔◡◔)っ ♥ Just another free Stock Charts Website ♥
+         </h1>
          <Main></Main>
          {/* <WS></WS> */}
       </div>

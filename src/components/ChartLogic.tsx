@@ -2,6 +2,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import React, { useEffect } from "react";
+import { Tooltip } from "chart.js";
 
 /* Chart code */
 // Themes begin
@@ -52,7 +53,10 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
          series2.dataFields.dateX = "date";
          series2.dataFields.valueY = "average";
          series2.tooltipText = "Average:${valueY}";
+         // series2.tooltip.getFillFromObject = false;
+         // series2.tooltip.background.fill = am4core.color("#67b7dc");
          series2.strokeOpacity = 1;
+         series2.stroke = am4core.color("#e88029");
       }
 
       chart.cursor = new am4charts.XYCursor();

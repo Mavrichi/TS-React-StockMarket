@@ -6,9 +6,7 @@ import SymbolSearch from "./components/SymbolSearcher";
 function App() {
    return (
       <div className="App">
-         <h1 id="mainTitle">
-            (っ◔◡◔)っ ♥ Just another free Stock Charts Website ♥
-         </h1>
+         <h1 id="mainTitle">Free OHLC Candlestick Stock Market Chart</h1>
          <SymbolSearch></SymbolSearch>
          {/* <WS></WS> */}
       </div>

@@ -7,6 +7,7 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
    const [StockData, setStockData] = useState<stocktype[]>();
    const [startTimeStamp, setStartTimeStamp] = useState<number>(1577836800);
    const [resolution, setResolution] = useState<string>("D");
+   const [averageLine, setAverageLine] = useState<boolean>(false);
 
    interface stocktype {
       c: string; // close price
@@ -15,7 +16,11 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
       l: string; // low price
       v: string; // volume
       t: string; // timestamp
+      avg: number; //average point
    }
+   const handleAverageShow = () => (event: MouseEvent) => {
+      setAverageLine(!averageLine);
+   };
    const handleDateChange = (timestamp: string) => (event: MouseEvent) => {
       let newStamp: number;
       const currDate: number = Math.floor(Date.now() / 1000);
@@ -82,12 +87,16 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
       return time;
    };
    useEffect(() => {
+      let sum: number;
+      let index: number;
       function symbolUrl(): string {
          return `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=${resolution}&from=${startTimeStamp}&to=${Math.floor(
             Date.now() / 1000
          )}&token=butpoev48v6skju275a0`;
       }
       async function fetcher() {
+         sum = 0;
+         index = 0;
          await fetch(symbolUrl())
             .then((res) => res.json())
             .then((data) => {
@@ -98,12 +107,16 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
                   h: number,
                   l: number
                ) {
+                  index++;
+                  sum += data.c[i];
                   return {
                      date: getDate(data.t[i]),
                      open: data.o[i].toString(),
                      high: data.h[i].toString(),
                      low: data.l[i].toString(),
                      close: data.c[i].toString(),
+
+                     average: (sum / index).toString(),
                   };
                });
 
@@ -164,8 +177,17 @@ const Charting: React.FC<Props> = ({ userSymbol }) => {
             >
                5 Years
             </button>
+            {averageLine ? (
+               <button className="button4" onClick={handleAverageShow()}>
+                  Hide average line
+               </button>
+            ) : (
+               <button className="button3" onClick={handleAverageShow()}>
+                  Show average line
+               </button>
+            )}
          </div>
-         <StockChart StockData={StockData} />
+         <StockChart StockData={StockData} averageLine={averageLine} />
       </div>
    );
 };

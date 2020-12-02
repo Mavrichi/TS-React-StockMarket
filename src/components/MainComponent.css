@@ -104,6 +104,41 @@
    text-align: center;
    transition: all 0.2s;
 }
+.button3 {
+   color: rgb(84, 117, 170);
+   height: 3em;
+   width: 13em;
+   background: none;
+   display: inline-block;
+   padding: 0.35em 1.2em;
+   border: 0.1em solid #ffffff;
+   margin: 0 0.3em 0.3em 0;
+   border-radius: 0.12em;
+   box-sizing: border-box;
+   text-decoration: none;
+   font-family: "Roboto", sans-serif;
+   font-weight: 300;
+   text-align: center;
+   transition: all 0.2s;
+}
+.button4 {
+   color: black;
+   background-color: rgb(70, 109, 173);
+   height: 3em;
+   width: 13em;
+   display: inline-block;
+   padding: 0.35em 1.2em;
+   border: 0.1em solid #ffffff;
+   margin: 0 0.3em 0.3em 0;
+   border-radius: 0.12em;
+   box-sizing: border-box;
+   text-decoration: none;
+   font-family: "Roboto", sans-serif;
+   font-weight: 300;
+   text-align: center;
+   transition: all 0.2s;
+}
+
 .button2:hover {
    color: #000000;
    background-color: rgb(223, 35, 89);
@@ -117,6 +152,16 @@
    .button2 {
       height: 3em;
       width: 5em;
+      margin: 0.4em auto;
+   }
+   .button3 {
+      height: 3em;
+      width: 10em;
+      margin: 0.4em auto;
+   }
+   .button4 {
+      height: 3em;
+      width: 10em;
       margin: 0.4em auto;
    }
    #chartDiv {

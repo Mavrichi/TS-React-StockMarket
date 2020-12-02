@@ -25,6 +25,11 @@ const Main: React.FC = () => {
    }, []);
 
    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+      // if(e.target.value.keyCode == 13) {
+      //    e.preventDefault();
+      //    return false;
+      //  }
+      e.preventDefault();
       if (symbols.includes(e.target.value.toUpperCase())) {
          if (transformed) {
             gsap.to(".App", { justifyContent: "start" });
@@ -49,22 +54,21 @@ const Main: React.FC = () => {
 
    return (
       <div className="MainDiv">
-         <form>
-            <div className="searchBox">
-               <label htmlFor="browser"></label>
-               <input
-                  placeholder="Search for a stock market symbol ex: AAPL | GOOG | TSLA..."
-                  className="searchBar"
-                  list="browsers"
-                  name="browser"
-                  id="browser"
-                  onChange={handleSearch}
-               ></input>
-               <datalist id="browsers" className="InputArea">
-                  {SymbolList()}
-               </datalist>
-            </div>
-         </form>
+         <div className="searchBox">
+            <label htmlFor="browser"></label>
+            <input
+               placeholder="Search for a stock market symbol ex: AAPL | GOOG | TSLA..."
+               className="searchBar"
+               list="browsers"
+               name="browser"
+               id="browser"
+               onChange={handleSearch}
+            ></input>
+            <datalist id="browsers" className="InputArea">
+               {SymbolList()}
+            </datalist>
+         </div>
+
          <div className="MiddleSection">
             {transformed ? (
                <Charting userSymbol={searchInput} />

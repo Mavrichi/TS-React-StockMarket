@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import SymbolSearch from "./components/SymbolSearcher";
-//import WS from "./components/WS";
+//import WS from "./components/WebSocket";
 
 function App() {
    return (

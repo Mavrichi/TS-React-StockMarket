@@ -52,6 +52,9 @@
    transition: 0.4s ease;
    background-color: rgb(189 214 226 / 75%);
 }
+::-webkit-calendar-picker-indicator {
+   display: none;
+}
 .TimeStampButton {
    border-radius: 20px;
    border-top-left-radius: 20px;
@@ -173,4 +176,7 @@
    .charting {
       height: 60%;
    }
+}
+.DataParserMain {
+   display: flex;
 }

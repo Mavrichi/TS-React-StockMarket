@@ -22,7 +22,6 @@ interface Props {
 }
 const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
    useEffect(() => {
-      console.log("stockdata Este:", StockData);
       let chart = am4core.create("chartdiv", am4charts.XYChart);
       chart.paddingRight = 20;
 

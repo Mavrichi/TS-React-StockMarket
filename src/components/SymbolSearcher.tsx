@@ -3,13 +3,15 @@ import "./MainComponent.css";
 import DataParser from "./DataParser";
 const SymbolSearch: React.FC = () => {
    const [searchInput, setSearchInput] = useState<string>("");
+   const [isFound, setIsFound] = useState<boolean>(true);
    const [transformed, setTransformed] = useState<boolean>(false);
    const [symbols, setSymbols] = useState<string[]>([]);
+   const [companyName, setCompanyName] = useState<string[]>([]);
    const symbolUrl: string =
       "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=butpoev48v6skju275a0";
    interface datatype {
       currency: string;
-      description: string;
+      description: string[];
       displaySymbol: string;
       symbol: string;
       type: string;
@@ -18,28 +20,38 @@ const SymbolSearch: React.FC = () => {
       fetch(symbolUrl)
          .then((res) => res.json())
          .then((data) => {
-            const dataMap = data.map((e: datatype) => e.symbol);
-            setSymbols(dataMap);
+            setCompanyName(data.map((e: datatype) => e.description));
+            setSymbols(data.map((e: datatype) => e.symbol));
          });
    }, []);
 
-   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-      // if(e.target.value.keyCode == 13) {
-      //    e.preventDefault();
-      //    return false;
-      //  }
-      e.preventDefault();
-      if (symbols.includes(e.target.value.toUpperCase())) {
-         setSearchInput(e.target.value.toUpperCase());
-         setTransformed(true);
-      }
+   const handleSearch = (ev: any) => {
+      ev.preventDefault();
+      // if (ev.keyCode === 13) {
+      //    ev.preventDefault();
+      // }
+      setTimeout(() => {
+         if (symbols.includes(ev.target.value.toUpperCase())) {
+            setSearchInput(ev.target.value.toUpperCase());
+            setTransformed(true);
+            setIsFound(true);
+         } else {
+            setIsFound(false);
+         }
+      }, 3000);
    };
+   // const handleKeypress = (e: { keyCode: number }, value:string) => {
+   //    //it triggers by pressing the enter key
+   //    if (e.keyCode === 13) {
+   //       handleSearch(ev.target.value);
+   //    }
+   // };
 
    const SymbolList = () => {
       const rows = [];
       for (let i: number = 0; i < symbols.length; i++) {
          rows.push(
-            <option key={i} value={symbols[i]}>
+            <option key={i} value={symbols[i]} label={companyName[i]}>
                {symbols[i]}
             </option>
          );
@@ -59,6 +71,7 @@ const SymbolSearch: React.FC = () => {
                name="browser"
                id="browser"
                onChange={handleSearch}
+               //onKeyPress={handleKeypress}
             ></input>
             <datalist id="browsers" className="InputArea">
                {SymbolList()}
@@ -67,7 +80,7 @@ const SymbolSearch: React.FC = () => {
 
          <div className="MiddleSection">
             {transformed ? (
-               <DataParser userSymbol={searchInput} />
+               <DataParser userSymbol={searchInput} correctInput={isFound} />
             ) : (
                <div className="Loading">
                   Search for a symbol to render a new chart !

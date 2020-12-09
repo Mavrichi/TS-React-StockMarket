@@ -2,9 +2,13 @@ import React, { useState, useEffect, MouseEvent } from "react";
 import StockChart from "./ChartLogic";
 interface Props {
    userSymbol: string;
+   correctInput: boolean;
 }
-const DataParser: React.FC<Props> = ({ userSymbol }) => {
+const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
    const [StockData, setStockData] = useState<stocktype[]>();
+   const [companyName, setCompanyName] = useState<string>();
+   const [companyLogoUrl, setCompanyLogoUrl] = useState<string>("");
+   const [companyWebsite, setCompanyWebsite] = useState<string>();
    const [startTimeStamp, setStartTimeStamp] = useState<number>(1577836800);
    const [resolution, setResolution] = useState<string>("D");
    const [averageLine, setAverageLine] = useState<boolean>(false);
@@ -94,9 +98,19 @@ const DataParser: React.FC<Props> = ({ userSymbol }) => {
             Date.now() / 1000
          )}&token=butpoev48v6skju275a0`;
       }
-      async function fetcher() {
+      const urlCompanyDescription = `https://finnhub.io/api/v1/stock/profile2?symbol=${userSymbol}&token=butpoev48v6skju275a0`;
+
+      async function fetchCandleData() {
          sum = 0;
          index = 0;
+         await fetch(urlCompanyDescription)
+            .then((res) => res.json())
+            .then((data) => {
+               setCompanyName(data.name);
+               setCompanyLogoUrl(data.logo);
+               setCompanyWebsite(data.weburl);
+               console.log("data este", data);
+            });
          await fetch(symbolUrl())
             .then((res) => res.json())
             .then((data) => {
@@ -123,71 +137,86 @@ const DataParser: React.FC<Props> = ({ userSymbol }) => {
                setStockData(resData);
             });
       }
-      fetcher();
+      fetchCandleData();
    }, [userSymbol, startTimeStamp, resolution]);
    return (
-      <div className="charting">
-         <div className="buttonList">
-            <button
-               id="1D"
-               className="button1"
-               onClick={handleDateChange("1D")}
-            >
-               1 Day
-            </button>
-            <button
-               id="5D"
-               className="button2"
-               onClick={handleDateChange("5D")}
-            >
-               5 Days
-            </button>
-            <button
-               id="1W"
-               className="button1"
-               onClick={handleDateChange("1W")}
-            >
-               1 Week
-            </button>
-            <button
-               id="1M"
-               className="button2"
-               onClick={handleDateChange("1M")}
-            >
-               1 Month
-            </button>
-            <button
-               id="6M"
-               className="button1"
-               onClick={handleDateChange("6M")}
-            >
-               6 Months
-            </button>
-            <button
-               id="1Y"
-               className="button2"
-               onClick={handleDateChange("1Y")}
-            >
-               1 Year
-            </button>
-            <button
-               id="5Y"
-               className="button1"
-               onClick={handleDateChange("5Y")}
-            >
-               5 Years
-            </button>
-            {averageLine ? (
-               <button className="button4" onClick={handleAverageShow()}>
-                  Hide average line
-               </button>
-            ) : (
-               <button className="button3" onClick={handleAverageShow()}>
-                  Show average line
-               </button>
-            )}
-         </div>
-         <StockChart StockData={StockData} averageLine={averageLine} />
+      <div className="DataParserMain">
+         {correctInput ? (
+            <div className="charting">
+               <div className="companyInfo">Name: {companyName}</div>
+               <a href={companyWebsite}>
+                  <img src={companyLogoUrl} className="companyInfo"></img>
+               </a>
+               <a href={companyWebsite} className="companyInfo">
+                  Website: {companyWebsite}
+               </a>
+               <div className="buttonList">
+                  <button
+                     id="1D"
+                     className="button1"
+                     onClick={handleDateChange("1D")}
+                  >
+                     1 Day
+                  </button>
+                  <button
+                     id="5D"
+                     className="button2"
+                     onClick={handleDateChange("5D")}
+                  >
+                     5 Days
+                  </button>
+                  <button
+                     id="1W"
+                     className="button1"
+                     onClick={handleDateChange("1W")}
+                  >
+                     1 Week
+                  </button>
+                  <button
+                     id="1M"
+                     className="button2"
+                     onClick={handleDateChange("1M")}
+                  >
+                     1 Month
+                  </button>
+                  <button
+                     id="6M"
+                     className="button1"
+                     onClick={handleDateChange("6M")}
+                  >
+                     6 Months
+                  </button>
+                  <button
+                     id="1Y"
+                     className="button2"
+                     onClick={handleDateChange("1Y")}
+                  >
+                     1 Year
+                  </button>
+                  <button
+                     id="5Y"
+                     className="button1"
+                     onClick={handleDateChange("5Y")}
+                  >
+                     5 Years
+                  </button>
+                  {averageLine ? (
+                     <button className="button4" onClick={handleAverageShow()}>
+                        Hide average line
+                     </button>
+                  ) : (
+                     <button className="button3" onClick={handleAverageShow()}>
+                        Show average line
+                     </button>
+                  )}
+               </div>
+               <StockChart StockData={StockData} averageLine={averageLine} />
+            </div>
+         ) : (
+            <div className="Loading">
+               Sorry , couldn't find a company with this symbol
+            </div>
+         )}
       </div>
    );
 };

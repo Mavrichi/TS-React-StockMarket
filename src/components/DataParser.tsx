@@ -1,9 +1,18 @@
 import React, { useState, useEffect, MouseEvent } from "react";
 import StockChart from "./ChartLogic";
+import "react-modern-calendar-datepicker/lib/DatePicker.css";
+import DatePicker, {
+   Calendar,
+   DayValue,
+   DayRange,
+   Day,
+} from "react-modern-calendar-datepicker";
+
 interface Props {
    userSymbol: string;
    correctInput: boolean;
 }
+
 const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
    const [StockData, setStockData] = useState<stocktype[]>();
    const [companyName, setCompanyName] = useState<string>();
@@ -12,7 +21,16 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
    const [startTimeStamp, setStartTimeStamp] = useState<number>(1577836800);
    const [resolution, setResolution] = useState<string>("D");
    const [averageLine, setAverageLine] = useState<boolean>(false);
-
+   const [day, setDay] = React.useState<DayValue>(null);
+   const [dayRange, setDayRange] = React.useState<DayRange>({
+      from: null,
+      to: null,
+   });
+   const [endDate, setEndDate] = React.useState<number>(
+      Math.floor(Date.now() / 1000)
+   );
+   const [days, setDays] = React.useState<Day[]>([]);
+   let oldUserSymbol = "";
    interface stocktype {
       c: string; // close price
       o: string; // open price
@@ -28,59 +46,81 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
    const handleDateChange = (timestamp: string) => (event: MouseEvent) => {
       let newStamp: number;
       const currDate: number = Math.floor(Date.now() / 1000);
+
       if (timestamp === "1D") {
          //calculeaza current date - o zi
          newStamp = currDate - 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(Math.floor(Date.now() / 1000));
          setResolution("5");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
       if (timestamp === "5D") {
          newStamp = currDate - 5 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(currDate);
          setResolution("30");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
       if (timestamp === "1W") {
          newStamp = currDate - 7 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(currDate);
          setResolution("30");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
       if (timestamp === "1M") {
          newStamp = currDate - 30 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(currDate);
          setResolution("30");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
       if (timestamp === "6M") {
          newStamp = currDate - 6 * 30 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(currDate);
          setResolution("D");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
       if (timestamp === "1Y") {
          newStamp = currDate - 12 * 30 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(currDate);
          setResolution("D");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
       if (timestamp === "5Y") {
          newStamp = currDate - 5 * 12 * 30 * 24 * 60 * 60;
          setStartTimeStamp(newStamp);
+         setEndDate(currDate);
          setResolution("W");
+         setDayRange({
+            from: null,
+            to: null,
+         });
       }
    };
    const getDate = (UNIX: number) => {
       var a = new Date(UNIX * 1000);
-      // var months = [
-      //    "Jan",
-      //    "Feb",
-      //    "Mar",
-      //    "Apr",
-      //    "May",
-      //    "Jun",
-      //    "Jul",
-      //    "Aug",
-      //    "Sep",
-      //    "Oct",
-      //    "Nov",
-      //    "Dec",
-      // ];
       var year = a.getFullYear();
       var month = 1 + a.getMonth();
       var date = a.getDate();
@@ -93,64 +133,114 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
    useEffect(() => {
       let sum: number;
       let index: number;
-      function symbolUrl(): string {
-         return `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=${resolution}&from=${startTimeStamp}&to=${Math.floor(
-            Date.now() / 1000
-         )}&token=butpoev48v6skju275a0`;
+      if (dayRange.from !== undefined && dayRange.from !== null) {
+         let startDate = new Date(
+            ` ${dayRange.from.year}.
+           ${dayRange.from.month}.
+           ${dayRange.from.day}`
+         );
+         let startDateToUnix: number = Math.floor(startDate.getTime() / 1000);
+
+         if (dayRange.to !== undefined && dayRange.to !== null) {
+            let endDate = new Date(
+               ` ${dayRange.to.year}.
+              ${dayRange.to.month}.
+              ${dayRange.to.day}`
+            );
+            let endDateToUnix: number = Math.floor(endDate.getTime() / 1000);
+            if (endDateToUnix - startDateToUnix <= 60 * 60 * 24 * 7) {
+               setResolution("5");
+            } else if (endDateToUnix - startDateToUnix <= 60 * 60 * 24 * 180) {
+               setResolution("30");
+            }
+            setStartTimeStamp(startDateToUnix);
+            setEndDate(endDateToUnix);
+         }
       }
-      const urlCompanyDescription = `https://finnhub.io/api/v1/stock/profile2?symbol=${userSymbol}&token=butpoev48v6skju275a0`;
+      function symbolUrl(): string {
+         return `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=${resolution}&from=${startTimeStamp}&to=${endDate}&token=bvbbumf48v6q7r403elg`;
+      }
+      const urlCompanyDescription = `https://finnhub.io/api/v1/stock/profile2?symbol=${userSymbol}&token=bvbbumf48v6q7r403elg`;
 
       async function fetchCandleData() {
          sum = 0;
          index = 0;
-         await fetch(urlCompanyDescription)
-            .then((res) => res.json())
-            .then((data) => {
-               setCompanyName(data.name);
-               setCompanyLogoUrl(data.logo);
-               setCompanyWebsite(data.weburl);
-               console.log("data este", data);
-            });
+
+         if (oldUserSymbol !== userSymbol) {
+            console.log("am executat fetchul din if urlcompany");
+            await fetch(urlCompanyDescription)
+               .then((res) => res.json())
+               .then((data) => {
+                  setCompanyName(data.name);
+                  setCompanyLogoUrl(data.logo);
+                  setCompanyWebsite(data.weburl);
+               });
+            oldUserSymbol = userSymbol;
+         }
          await fetch(symbolUrl())
             .then((res) => res.json())
             .then((data) => {
-               const resData = data.c.map(function (
-                  c: number,
-                  i: number,
-                  o: number,
-                  h: number,
-                  l: number
-               ) {
-                  index++;
-                  sum += data.c[i];
-                  return {
-                     date: getDate(data.t[i]),
-                     open: data.o[i].toString(),
-                     high: data.h[i].toString(),
-                     low: data.l[i].toString(),
-                     close: data.c[i].toString(),
+               if (data.c !== undefined) {
+                  const resData = data.c.map(function (
+                     c: number,
+                     i: number,
+                     o: number,
+                     h: number,
+                     l: number
+                  ) {
+                     index++;
+                     sum += data.c[i];
+                     return {
+                        date: getDate(data.t[i]),
+                        open: data.o[i].toString(),
+                        high: data.h[i].toString(),
+                        low: data.l[i].toString(),
+                        close: data.c[i].toString(),
+                        average: (sum / index).toString(),
+                     };
+                  });
 
-                     average: (sum / index).toString(),
-                  };
-               });
-
-               setStockData(resData);
+                  setStockData(resData);
+               } else
+                  return (
+                     setStockData([]),
+                     window.alert(
+                        "Din pacate APi-ul nu are date pentru perioada selectata , va rugam schimbati perioada de timp"
+                     )
+                  );
             });
       }
       fetchCandleData();
-   }, [userSymbol, startTimeStamp, resolution]);
+   }, [userSymbol, startTimeStamp, dayRange.to]);
    return (
       <div className="DataParserMain">
          {correctInput ? (
             <div className="charting">
-               <div className="companyInfo">Name: {companyName}</div>
-               <a href={companyWebsite}>
-                  <img src={companyLogoUrl} className="companyInfo"></img>
-               </a>
-               <a href={companyWebsite} className="companyInfo">
-                  Website: {companyWebsite}
-               </a>
+               <div className="companyInfoCard">
+                  <div className="companyName">{companyName}</div>
+                  <a href={companyWebsite}>
+                     <img src={companyLogoUrl} className="companyImage"></img>
+                  </a>
+                  <a href={companyWebsite} className="companyWebsite">
+                     <button className="button1">Visit Website</button>
+                  </a>
+               </div>
+
                <div className="buttonList">
+                  {/* <DatePicker
+                     value={selectedDayRange}
+                     onChange={setSelectedDayRange}
+                     shouldHighlightWeekends
+                     inputPlaceholder="Select a day"
+                  /> */}
+                  {/* <DatePicker value={day} onChange={setDay} /> */}
+                  <div className="DateRangePicker">
+                     <DatePicker
+                        value={dayRange}
+                        onChange={setDayRange}
+                        inputPlaceholder="Select a day"
+                     />
+                  </div>
                   <button
                      id="1D"
                      className="button1"

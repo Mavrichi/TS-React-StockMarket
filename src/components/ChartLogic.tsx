@@ -41,8 +41,6 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
       series.dataFields.openValueY = "open";
       series.dataFields.lowValueY = "low";
       series.dataFields.highValueY = "high";
-      //series.dataFields.customValue = "avg";
-      //series.dataFields.volumeValueX = "Volume";
       series.simplifiedProcessing = true;
       series.tooltipText =
          "Open:${openValueY.value}\nLow:${lowValueY.value}\nHigh:${highValueY.value}\nClose:${valueY.value}";
@@ -52,23 +50,17 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
          series2.dataFields.dateX = "date";
          series2.dataFields.valueY = "average";
          series2.tooltipText = "Average:${valueY}";
-         // series2.tooltip.getFillFromObject = false;
-         // series2.tooltip.background.fill = am4core.color("#67b7dc");
          series2.strokeOpacity = 1;
          series2.stroke = am4core.color("#e88029");
       }
 
       chart.cursor = new am4charts.XYCursor();
 
-      // a separate series for scrollbar
       let lineSeries = chart.series.push(new am4charts.LineSeries());
       lineSeries.dataFields.dateX = "date";
       lineSeries.dataFields.valueY = "close";
-      //lineSeries.dataFields.customValue = "avg";
-      // need to set on default state, as initially series is "show"
       lineSeries.defaultState.properties.visible = false;
 
-      // hide from legend too (in case there is one)
       lineSeries.hiddenInLegend = true;
       lineSeries.fillOpacity = 0.5;
       lineSeries.strokeOpacity = 0.5;
@@ -79,7 +71,6 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
       if (StockData !== undefined) {
          chart.data = StockData;
       }
-      //chart.current = chart;
 
       return () => {
          chart.dispose();

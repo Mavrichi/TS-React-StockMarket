@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./MainComponent.css";
 import DataParser from "./DataParser";
 const SymbolSearch: React.FC = () => {
@@ -8,7 +8,8 @@ const SymbolSearch: React.FC = () => {
    const [symbols, setSymbols] = useState<string[]>([]);
    const [companyName, setCompanyName] = useState<string[]>([]);
    const symbolUrl: string =
-      "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=butpoev48v6skju275a0";
+      "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=bvbbumf48v6q7r403elg";
+   const inputRef = useRef<HTMLInputElement | null | any>(null);
    interface datatype {
       currency: string;
       description: string[];
@@ -16,7 +17,9 @@ const SymbolSearch: React.FC = () => {
       symbol: string;
       type: string;
    }
+
    useEffect(() => {
+      inputRef.current.focus();
       fetch(symbolUrl)
          .then((res) => res.json())
          .then((data) => {
@@ -24,13 +27,15 @@ const SymbolSearch: React.FC = () => {
             setSymbols(data.map((e: datatype) => e.symbol));
          });
    }, []);
-
-   const handleSearch = (ev: any) => {
+   var setTimeoutName: NodeJS.Timeout;
+   //setTimeoutName we need this so we cna clear the Timeout ( instead of waiting 2 seconds for each change we only wait once).
+   const handleSearch = (ev: {
+      preventDefault: () => void;
+      target: { value: string };
+   }) => {
       ev.preventDefault();
-      // if (ev.keyCode === 13) {
-      //    ev.preventDefault();
-      // }
-      setTimeout(() => {
+      clearTimeout(setTimeoutName);
+      setTimeoutName = setTimeout(() => {
          if (symbols.includes(ev.target.value.toUpperCase())) {
             setSearchInput(ev.target.value.toUpperCase());
             setTransformed(true);
@@ -38,7 +43,7 @@ const SymbolSearch: React.FC = () => {
          } else {
             setIsFound(false);
          }
-      }, 3000);
+      }, 2000);
    };
    // const handleKeypress = (e: { keyCode: number }, value:string) => {
    //    //it triggers by pressing the enter key
@@ -46,6 +51,7 @@ const SymbolSearch: React.FC = () => {
    //       handleSearch(ev.target.value);
    //    }
    // };
+   // If i ever want to submit the form on Enter key
 
    const SymbolList = () => {
       const rows = [];
@@ -65,6 +71,7 @@ const SymbolSearch: React.FC = () => {
          <div className="searchBox">
             <label htmlFor="browser"></label>
             <input
+               ref={inputRef}
                placeholder="Search for a stock market symbol ex: AAPL | GOOG | TSLA..."
                className="searchBar"
                list="browsers"

@@ -1,34 +1,20 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import "./MainComponent.css";
-import DataParser from "./DataParser";
-const SymbolSearch: React.FC = () => {
+import DataParser from "./Buttons";
+import CandleSticksFetcher from "../Fetches/CandleStickFetcher";
+import CompanyInfoFetcher from "../Fetches/CompanyInfoFetcher";
+
+interface Props {
+   companyName: string[];
+   symbols: string[];
+}
+
+const SymbolSearch: React.FC<Props> = ({ companyName, symbols }) => {
    const [searchInput, setSearchInput] = useState<string>("");
    const [isFound, setIsFound] = useState<boolean>(true);
    const [transformed, setTransformed] = useState<boolean>(false);
-   const [symbols, setSymbols] = useState<string[]>([]);
-   const [companyName, setCompanyName] = useState<string[]>([]);
-   const symbolUrl: string =
-      "https://finnhub.io/api/v1/stock/symbol?exchange=US&token=bvbbumf48v6q7r403elg";
-   const inputRef = useRef<HTMLInputElement | null | any>(null);
-   interface datatype {
-      currency: string;
-      description: string[];
-      displaySymbol: string;
-      symbol: string;
-      type: string;
-   }
-
-   useEffect(() => {
-      inputRef.current.focus();
-      fetch(symbolUrl)
-         .then((res) => res.json())
-         .then((data) => {
-            setCompanyName(data.map((e: datatype) => e.description));
-            setSymbols(data.map((e: datatype) => e.symbol));
-         });
-   }, []);
    var setTimeoutName: NodeJS.Timeout;
-   //setTimeoutName we need this so we cna clear the Timeout ( instead of waiting 2 seconds for each change we only wait once).
+   //setTimeoutName we need this so we can clear the Timeout ( instead of waiting 2 seconds for each change we only wait once).
    const handleSearch = (ev: {
       preventDefault: () => void;
       target: { value: string };
@@ -43,7 +29,7 @@ const SymbolSearch: React.FC = () => {
          } else {
             setIsFound(false);
          }
-      }, 2000);
+      }, 1000);
    };
    // const handleKeypress = (e: { keyCode: number }, value:string) => {
    //    //it triggers by pressing the enter key
@@ -71,7 +57,6 @@ const SymbolSearch: React.FC = () => {
          <div className="searchBox">
             <label htmlFor="browser"></label>
             <input
-               ref={inputRef}
                placeholder="Search for a stock market symbol ex: AAPL | GOOG | TSLA..."
                className="searchBar"
                list="browsers"
@@ -87,7 +72,13 @@ const SymbolSearch: React.FC = () => {
 
          <div className="MiddleSection">
             {transformed ? (
-               <DataParser userSymbol={searchInput} correctInput={isFound} />
+               <div className="chartAndInfo">
+                  <CompanyInfoFetcher
+                     userSymbol={searchInput}
+                     correctInput={isFound}
+                  />
+                  <DataParser userSymbol={searchInput} correctInput={isFound} />
+               </div>
             ) : (
                <div className="Loading">
                   Search for a symbol to render a new chart !

@@ -1,12 +1,15 @@
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import am4themes_spiritedaway from "@amcharts/amcharts4/themes/spiritedaway";
+import am4themes_dark from "@amcharts/amcharts4/themes/dark";
 import React, { useEffect } from "react";
 import { Tooltip } from "chart.js";
 
 /* Chart code */
 // Themes begin
 am4core.useTheme(am4themes_animated);
+am4core.useTheme(am4themes_dark);
 // Themes end
 interface stocktype {
    c: string; // close price
@@ -26,6 +29,14 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
       chart.paddingRight = 20;
 
       chart.dateFormatter.inputDateFormat = "yyyy-MM-dd-H-mm";
+      // chart.colors.list = [
+      //    am4core.color("#845EC2"),
+      //    am4core.color("#D65DB1"),
+      //    am4core.color("#FF6F91"),
+      //    am4core.color("#FF9671"),
+      //    am4core.color("#FFC75F"),
+      //    am4core.color("#F9F871"),
+      // ];
 
       let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
       dateAxis.renderer.grid.template.location = 0;
@@ -42,6 +53,8 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
       series.dataFields.lowValueY = "low";
       series.dataFields.highValueY = "high";
       series.simplifiedProcessing = true;
+      // series.fill = am4core.color("#e88029");
+      //series.stroke = am4core.color("#e88029");
       series.tooltipText =
          "Open:${openValueY.value}\nLow:${lowValueY.value}\nHigh:${highValueY.value}\nClose:${valueY.value}";
       //Custom average line
@@ -77,6 +90,6 @@ const StockChart: React.FC<Props> = ({ StockData, averageLine }) => {
       };
    }, [StockData, averageLine]);
 
-   return <div id="chartdiv" style={{ width: "100%", height: "95%" }}></div>;
+   return <div id="chartdiv"></div>;
 };
 export default StockChart;

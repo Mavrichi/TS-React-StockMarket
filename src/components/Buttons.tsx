@@ -1,12 +1,7 @@
 import React, { useState, useEffect, MouseEvent } from "react";
-import StockChart from "./ChartLogic";
 import "react-modern-calendar-datepicker/lib/DatePicker.css";
-import DatePicker, {
-   Calendar,
-   DayValue,
-   DayRange,
-   Day,
-} from "react-modern-calendar-datepicker";
+import DatePicker, { DayRange } from "react-modern-calendar-datepicker";
+import CandleSticksFetcher from "../Fetches/CandleStickFetcher";
 
 interface Props {
    userSymbol: string;
@@ -14,14 +9,9 @@ interface Props {
 }
 
 const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
-   const [StockData, setStockData] = useState<stocktype[]>();
-   const [companyName, setCompanyName] = useState<string>();
-   const [companyLogoUrl, setCompanyLogoUrl] = useState<string>("");
-   const [companyWebsite, setCompanyWebsite] = useState<string>();
    const [startTimeStamp, setStartTimeStamp] = useState<number>(1577836800);
    const [resolution, setResolution] = useState<string>("D");
    const [averageLine, setAverageLine] = useState<boolean>(false);
-   const [day, setDay] = React.useState<DayValue>(null);
    const [dayRange, setDayRange] = React.useState<DayRange>({
       from: null,
       to: null,
@@ -29,17 +19,8 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
    const [endDate, setEndDate] = React.useState<number>(
       Math.floor(Date.now() / 1000)
    );
-   const [days, setDays] = React.useState<Day[]>([]);
-   let oldUserSymbol = "";
-   interface stocktype {
-      c: string; // close price
-      o: string; // open price
-      h: string; // high price
-      l: string; // low price
-      v: string; // volume
-      t: string; // timestamp
-      avg: number; //average point
-   }
+   const [symbolUrl, setSymbolUrl] = useState<string>("");
+
    const handleAverageShow = () => (event: MouseEvent) => {
       setAverageLine(!averageLine);
    };
@@ -119,20 +100,8 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
          });
       }
    };
-   const getDate = (UNIX: number) => {
-      var a = new Date(UNIX * 1000);
-      var year = a.getFullYear();
-      var month = 1 + a.getMonth();
-      var date = a.getDate();
-      var hour = a.getHours();
-      var min = a.getMinutes();
-      // var sec = a.getSeconds();
-      var time = year + "-" + month + "-" + date + "-" + hour + "-" + min; // + " " + hour + ":" + min + ":" + sec;
-      return time;
-   };
+
    useEffect(() => {
-      let sum: number;
-      let index: number;
       if (dayRange.from !== undefined && dayRange.from !== null) {
          let startDate = new Date(
             ` ${dayRange.from.year}.
@@ -145,7 +114,7 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
             let endDate = new Date(
                ` ${dayRange.to.year}.
               ${dayRange.to.month}.
-              ${dayRange.to.day}`
+              ${dayRange.to.day + 1}`
             );
             let endDateToUnix: number = Math.floor(endDate.getTime() / 1000);
             if (endDateToUnix - startDateToUnix <= 60 * 60 * 24 * 7) {
@@ -157,84 +126,19 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
             setEndDate(endDateToUnix);
          }
       }
-      function symbolUrl(): string {
-         return `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=${resolution}&from=${startTimeStamp}&to=${endDate}&token=bvbbumf48v6q7r403elg`;
-      }
-      const urlCompanyDescription = `https://finnhub.io/api/v1/stock/profile2?symbol=${userSymbol}&token=bvbbumf48v6q7r403elg`;
 
-      async function fetchCandleData() {
-         sum = 0;
-         index = 0;
-
-         if (oldUserSymbol !== userSymbol) {
-            console.log("am executat fetchul din if urlcompany");
-            await fetch(urlCompanyDescription)
-               .then((res) => res.json())
-               .then((data) => {
-                  setCompanyName(data.name);
-                  setCompanyLogoUrl(data.logo);
-                  setCompanyWebsite(data.weburl);
-               });
-            oldUserSymbol = userSymbol;
-         }
-         await fetch(symbolUrl())
-            .then((res) => res.json())
-            .then((data) => {
-               if (data.c !== undefined) {
-                  const resData = data.c.map(function (
-                     c: number,
-                     i: number,
-                     o: number,
-                     h: number,
-                     l: number
-                  ) {
-                     index++;
-                     sum += data.c[i];
-                     return {
-                        date: getDate(data.t[i]),
-                        open: data.o[i].toString(),
-                        high: data.h[i].toString(),
-                        low: data.l[i].toString(),
-                        close: data.c[i].toString(),
-                        average: (sum / index).toString(),
-                     };
-                  });
-
-                  setStockData(resData);
-               } else
-                  return (
-                     setStockData([]),
-                     window.alert(
-                        "Din pacate APi-ul nu are date pentru perioada selectata , va rugam schimbati perioada de timp"
-                     )
-                  );
-            });
-      }
-      fetchCandleData();
+      setSymbolUrl(
+         `https://finnhub.io/api/v1/stock/candle?symbol=${userSymbol}&resolution=${resolution}&from=${startTimeStamp}&to=${endDate}&token=bvbbumf48v6q7r403elg`
+      );
+      console.log("Symbol url in buttons este", symbolUrl);
    }, [userSymbol, startTimeStamp, dayRange.to]);
    return (
       <div className="DataParserMain">
          {correctInput ? (
             <div className="charting">
-               <div className="companyInfoCard">
-                  <div className="companyName">{companyName}</div>
-                  <a href={companyWebsite}>
-                     <img src={companyLogoUrl} className="companyImage"></img>
-                  </a>
-                  <a href={companyWebsite} className="companyWebsite">
-                     <button className="button1">Visit Website</button>
-                  </a>
-               </div>
-
                <div className="buttonList">
-                  {/* <DatePicker
-                     value={selectedDayRange}
-                     onChange={setSelectedDayRange}
-                     shouldHighlightWeekends
-                     inputPlaceholder="Select a day"
-                  /> */}
-                  {/* <DatePicker value={day} onChange={setDay} /> */}
                   <div className="DateRangePicker">
+                     <span id="customDateText">Select a custom date:</span>
                      <DatePicker
                         value={dayRange}
                         onChange={setDayRange}
@@ -300,7 +204,10 @@ const DataParser: React.FC<Props> = ({ userSymbol, correctInput }) => {
                      </button>
                   )}
                </div>
-               <StockChart StockData={StockData} averageLine={averageLine} />
+               <CandleSticksFetcher
+                  symbolUrl={symbolUrl}
+                  averageLine={averageLine}
+               />
             </div>
          ) : (
             <div className="Loading">
